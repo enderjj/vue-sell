@@ -4,7 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -22,11 +22,11 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: './src/main.js' // 入口文件
   },
   output: {
-    path: config.build.assetsRoot,
-    filename: '[name].js',
+    path: config.build.assetsRoot, // 打包文件存放路径：config目录下 index.js 文件中 build 对象的 assetsRoot 选项表示的路径
+    filename: '[name].js', // 打包文件名 name 表示 entry 选项对应的 key 值，即 app.js
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath

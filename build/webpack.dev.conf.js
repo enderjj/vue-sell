@@ -12,6 +12,10 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+const appData = require('../data.json') // require app data
+const seller = appData.seller // seller information
+const goods = appData.goods // goods information
+const ratings = appData.ratings // ratings information
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -22,6 +26,27 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    // add request
+    before(app) {
+      app.get('/api/seller', (req, res) => {
+        res.json({
+          errno: 0,
+          data: seller
+        })
+      }),
+        app.get('/api/goods', (req, res) => {
+          res.json({
+            errno: 0,
+            data: goods
+          })
+        }),
+        app.get('/api/ratings', (req, res) => {
+          res.json({
+            errno: 0,
+            data: ratings
+          })
+        })
+    },
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -85,8 +110,8 @@ module.exports = new Promise((resolve, reject) => {
           messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
         },
         onErrors: config.dev.notifyOnErrors
-        ? utils.createNotifierCallback()
-        : undefined
+          ? utils.createNotifierCallback()
+          : undefined
       }))
 
       resolve(devWebpackConfig)
