@@ -1,0 +1,19 @@
+// 定义移动设备上 1 像素的显示 通过伪类实现
+border-1px($color)
+  position: relative
+  &::after
+    display: block
+    position: absolute
+    left: 0
+    bottom: 0
+    content: ' '
+    width: 100%
+    border-top: 1px solid $color
+  &:before
+    display: block
+    position: absolute
+    left: 0
+    top: 0
+    content: ' '
+    width: 100%
+    border-bottom: 1px solid $color
