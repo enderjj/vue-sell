@@ -15,15 +15,24 @@ Vue.use(Router);
  */
 const routes = [
   {
-    path: '/goods',
-    component: goods
+    path: '/',
+    redirect: { // 当访问'/'时重定向到'/goods'
+      name: 'goods'
+    }
+  },
+  {
+    path: '/goods', // 路由 hash 地址
+    name: 'goods', // 路由名称
+    component: goods // 路由对应的组件
   },
   {
     path: '/ratings',
+    name: 'ratings',
     component: ratings
   },
   {
     path: '/seller',
+    name: 'seller',
     component: seller
   }
 ];
@@ -31,5 +40,5 @@ const routes = [
 // 创建 Router 实例，然后传入 routes 配置
 export default new Router({
   routes,
-  linkActiveClass: 'active'
+  linkActiveClass: 'active' // 选中路由后添加的 class 名
 });
