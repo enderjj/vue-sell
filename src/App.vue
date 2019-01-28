@@ -18,7 +18,24 @@
 
 <script>
 import header from './components/header/header.vue'; // 引入 header 组件
+
+const ERR_OK = 0; // 响应成功码
+
 export default {
+  data() {
+    return {
+      seller: {} // 用于存放商家信息
+    };
+  },
+  created: function() { // 请求 header 要显示的数据
+    this.$http.get('/api/seller').then((response) => {
+      response = response.body; // 将响应数据转换成 Object 对象
+      if (response.errno === ERR_OK) {
+        this.seller = response.data; // 将响应中的 data 数据部分赋值给 seller 对象
+        console.log(this.seller);
+      }
+    });
+  },
   components: {
     'v-header': header // 注册 header 组件
   }
