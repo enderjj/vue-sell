@@ -20,7 +20,15 @@
         <i class="icon-keyboard_arrow_right"></i>
       </div>
     </div>
-    <div class="bulletin"></div>
+    <!-- 公告栏 -->
+    <div class="bulletin-wrapper">
+      <span class="bulletin-icon"></span><span class="bulletin-text">{{seller.bulletin}}</span>
+      <i class="icon-keyboard_arrow_right"></i>
+    </div>
+    <!-- 虚化的背景图片 利用滤镜 filter:blur 实现 -->
+    <div class="background">
+      <img :src="seller.avatar" width="100%" height="100%">
+    </div>
   </div>
 </template>
 
@@ -41,8 +49,10 @@ export default {
 @import '../../common/stylus/mixin.styl';
 
   .header
+    position: relative
     color: #fff
-    background-color: #999
+    background-color: rgba(7,17,27,0.5)
+    // background-color: #999
     .content-wrapper
       position: relative
       padding: 24px 12px 18px 24px
@@ -114,5 +124,40 @@ export default {
         .count
           vertical-align: top
           margin-right: 2px
+    .bulletin-wrapper
+      position: relative
+      height: 28px
+      line-height: 28px
+      padding: 0 16px 0 12px
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      background-color: rgba(7,17,27,0.2)
+      .bulletin-icon
+        display: inline-block
+        vertical-align: top
+        width: 22px
+        height: 12px
+        margin-top: 7px
+        bg-image('bulletin')
+        background-size: 22px 12px
+        background-repeat: no-repeat
+      .bulletin-text
+        vertical-align: top
+        font-size: 10px
+        margin: 0 4px
+      .icon-keyboard_arrow_right
+        position: absolute
+        font-size: 10px
+        right: 12px
+        top: 8px
+    .background
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      z-index: -1
+      filter: blur(10px)
 </style>
 
