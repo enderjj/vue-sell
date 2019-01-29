@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :seller="seller"></v-header>
     <div class="tab border-1px">
       <div class="tab-items">
         <router-link to="/goods">商品</router-link>
@@ -27,12 +27,11 @@ export default {
       seller: {} // 用于存放商家信息
     };
   },
-  created: function() { // 请求 header 要显示的数据
+  created() { // 请求 header 要显示的数据
     this.$http.get('/api/seller').then((response) => {
       response = response.body; // 将响应数据转换成 Object 对象
       if (response.errno === ERR_OK) {
         this.seller = response.data; // 将响应中的 data 数据部分赋值给 seller 对象
-        console.log(this.seller);
       }
     });
   },
