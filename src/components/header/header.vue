@@ -15,13 +15,13 @@
           <span class="support">{{seller.supports[0].description}}</span>
         </div>
       </div>
-      <div v-if="seller.supports" class="support-count">
+      <div v-if="seller.supports" class="support-count" @click="showDetail">
         <span class="count">{{seller.supports.length}}个</span>
         <i class="icon-keyboard_arrow_right"></i>
       </div>
     </div>
     <!-- 公告栏 -->
-    <div class="bulletin-wrapper">
+    <div class="bulletin-wrapper" @click="showDetail">
       <span class="bulletin-icon"></span><span class="bulletin-text">{{seller.bulletin}}</span>
       <i class="icon-keyboard_arrow_right"></i>
     </div>
@@ -29,29 +29,64 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
+    <!-- 公告及优惠信息 detail 部分 -->
+    <div v-show="detailShow" class="detail">
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main">
+          <h1 class="detail-seller-name">{{seller.name}}</h1>
+          <div class="star-wrapper">
+            <star :size="48" :score="seller.score"></star>
+          </div>
+        </div>
+      </div>
+      <div class="detail-close">
+        <i class="icon-close" @click="closeDetail"></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import star from '../star/star';
+
 export default {
   props: {
     seller: {
       type: Object
     }
   },
+  data() {
+    return {
+      detailShow: false // 是否显示 detail 部分
+    };
+  },
+  methods: {
+    // 显示 detail 浮层
+    showDetail() {
+      this.detailShow = true;
+    },
+    // 关闭 detail 浮层
+    closeDetail() {
+      this.detailShow = false;
+    }
+  },
   created() {
     this.iconMaps = ['decrease', 'discount', 'special', 'invoice', 'guarantee']; // 用于保存不同的 type 对应的类名
+  },
+  components: {
+    star
   }
 };
 </script>
 
 <style lang="stylus" type="stylesheet/stylus">
-@import '../../common/stylus/mixin.styl';
+  @import '../../common/stylus/mixin.styl';
 
   .header
     position: relative
     color: #fff
     background-color: rgba(7,17,27,0.5)
+    overflow: hidden
     // background-color: #999
     .content-wrapper
       position: relative
@@ -138,7 +173,7 @@ export default {
         vertical-align: top
         width: 22px
         height: 12px
-        margin-top: 7px
+        margin-top: 8px
         bg-image('bulletin')
         background-size: 22px 12px
         background-repeat: no-repeat
@@ -159,5 +194,35 @@ export default {
       height: 100%
       z-index: -1
       filter: blur(10px)
+    .detail
+      position: fixed
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: rgba(7,17,27,0.8)
+      // filter: blur(10px)
+      z-index: 100
+      .detail-wrapper
+        width: 100%
+        min-height: 100%
+        overflow: auto
+        .detail-main
+          margin-top: 64px
+          padding-bottom: 64px
+          .detail-seller-name
+            line-height: 16px
+            font-size: 16px
+            font-weight: 700
+            text-align: center
+          .star-wrapper
+            margin-top: 16px
+            padding: 2px 0
+            text-align: center
+      .detail-close
+        margin-top: -64px
+        width: 100%
+        font-size: 32px
+        text-align: center
 </style>
 
