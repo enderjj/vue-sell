@@ -114,20 +114,21 @@ export default {
   .content-wrapper 
     position: relative;
     padding: 24px 12px 18px 24px;
-    font-size: 0;
+    font-size: 0; // 去除 inline-block 元素之间的空白间隙
     .avatar
       display: inline-block;
-      vertical-align: top;
+      vertical-align: top; // 设置元素对齐方式
       img
         width: 64px;
         height: 64px;
-        // border-radius: 2px
+        border-radius: 2px
     .content
       display: inline-block;
       font-size: 12px;
       margin-left: 16px;
       .title
         margin: 2px 0 8px 0;
+        font-size: 0
         .brand
           display: inline-block;
           width: 30px;
@@ -147,6 +148,7 @@ export default {
         margin-bottom: 10px;
       .supports
         margin-bottom: 2px;
+        font-size: 0
         .support-icon
           display: inline-block;
           vertical-align: top;
@@ -154,7 +156,7 @@ export default {
           height: 12px;
           background-size: 12px 12px;
           background-repeat: no-repeat;
-          &.decrease
+          &.decrease // 根据不同的优惠类型显示不同的图标
             bg-image('decrease_1');
           &.discount
             bg-image('discount_1');
@@ -187,9 +189,9 @@ export default {
     height: 28px;
     line-height: 28px;
     padding: 0 16px 0 12px;
-    white-space: nowrap;
+    white-space: nowrap; // 不自动换行
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; // 多余内容省略号显示
     background-color: rgba(7, 17, 27, 0.2);
     .bulletin-icon
       display: inline-block;
@@ -216,7 +218,7 @@ export default {
     width: 100%;
     height: 100%;
     z-index: -1;
-    filter: blur(10px);
+    filter: blur(10px); // 背景虚化显示 给背景加上滤镜 filter
   .fade-enter-active, .fade-leave-active // 设置进入和离开动画的持续时间
     transition: all 0.5s
   .fade-enter, .fade-leave-to // 设置进入的初始状态和离开的最终状态
@@ -231,13 +233,13 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    // backdrop-filter: blur(10px)
+    backdrop-filter: blur(10px) // 浮层虚化显示
     z-index: 100;
     background-color: rgba(7, 17, 27, 0.8);
     .detail-wrapper
       width: 100%;
-      min-height: 100%;
-      overflow: auto;
+      min-height: 100%; // 设置容器最小高度为屏幕高度
+      overflow: auto; // 根据内容高度
       .detail-main
         margin-top: 64px;
         padding-bottom: 64px;
@@ -320,5 +322,6 @@ export default {
       font-size: 32px;
       text-align: center;
       color: rgba(255, 255, 255, 0.5);
+      clear: both
 </style>
 
