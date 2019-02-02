@@ -1,15 +1,15 @@
 <template>
   <div class="goods">
-    <div class="menu-wrapper">
+    <div class="menu-wrapper" ref="menuwrapper">
       <ul>
-        <li class="menu-item border-1px" v-for="item in goods" :key="item">
+        <li class="menu-item border-1px" v-for="(item, index) in goods" :key="item" @click="clickScroll(index)" :class="{'current': currentIndex===index}">
           <span class="menu-name"><span class="item-icon" v-show="item.type>0" :class="iconMaps[item.type]"></span>{{item.name}}</span>
         </li>
       </ul>
     </div>
-    <div class="foods-wrapper">
+    <div class="foods-wrapper" ref="foodwrapper">
       <ul>
-        <li v-for="item in goods" :key="item" class="foodlist">
+        <li v-for="item in goods" :key="item" class="foodlist food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" :key="food" class="food-item">
@@ -37,6 +37,8 @@
 </template>
 
 <script type="text/ecmascript6">
+  import BScroll from 'better-scroll';
+
   const ERR_OK = 0;
 
   export default {
@@ -47,8 +49,26 @@
     },
     data() {
       return {
-        goods: {} // 用于存放商品信息
+        goods: {}, // 用于存放商品信息
+        listHeight: [], // 用于存放每类商品列表的初始高度
+        scrollHeight: 0 // 初始滚动高度
       };
+    },
+    computed: {
+      // 当前应该显示的 menu 的索引值
+      currentIndex() {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let prevHeight = this.listHeight[i];
+          let nextHeight = this.listHeight[i + 1];
+
+          // 如果当前的 scrollY 在 prevHeight 和 nextHeight 之间，就显示对应的索引值对应的 menu
+          if (!nextHeight || (this.scrollHeight >= prevHeight && this.scrollHeight < nextHeight)) {
+            return i;
+          }
+        }
+
+        return 0;
+      }
     },
     created() {
       this.$http.get('/api/goods').then(response => {
@@ -56,10 +76,47 @@
 
         if (response.errno === ERR_OK) {
           this.goods = response.data; // 将响应中的 data 数据部分赋值给 goods 对象
+          this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
         }
       });
 
       this.iconMaps = ['decrease', 'discount', 'special', 'invoice', 'guarantee']; // 用于保存不同的 type 对应的类名
+    },
+    methods: {
+      // 初始化滚动条
+      _initScroll() {
+        this.menuScroll = new BScroll(this.$refs.menuwrapper, {click: true});
+        this.foodScroll = new BScroll(this.$refs.foodwrapper, {
+          probeType: 3 // 3 表示除了实时派发scroll事件，在 swipe 的情况下仍然能实时派发 scroll 事件
+        });
+        this.foodScroll.on('scroll', (pos) => {
+          this.scrollHeight = Math.abs(Math.round(pos.y)); // 求得当前的 y 轴位置
+        });
+      },
+
+      // 左侧菜单栏点击事件
+      clickScroll(index) {
+        let foodList = this.$refs.foodwrapper.getElementsByClassName('food-list-hook');
+        let toElement = foodList[index];
+        this.foodScroll.scrollToElement(toElement, 200); // scrollToElement() 是 better-scroll 提供的接口，直接滚动到某个位置
+      },
+
+      // 计算 listHeight
+      _calculateHeight() {
+        let height = 0; // 初始当前高度
+        const foodList = this.$refs.foodwrapper.getElementsByClassName('food-list-hook'); // foodList 是数组，保存所有类型的商品列表
+
+        this.listHeight.push(height);
+
+        for (let i = 0; i < foodList.length; i++) {
+          height += foodList[i].clientHeight; // 下一个商品列表的高度是上一个列表的高度+上一个列表的 clientHeight
+          this.listHeight.push(height);
+        }
+        console.log(this.listHeight);
+      }
     }
   };
 </script>
@@ -81,12 +138,21 @@
       .menu-item
         display: table; // table 显示方便设置垂直居中
         height: 54px;
+        width: 56px;
+        line-height: 14px;
         padding: 0 12px;
         border-1px(rgba(7,17,27,0.1));
+        &.current
+          position: relative;
+          margin-top: -1px;
+          z-index: 10
+          font-weight: 700;
+          background-color: #fff;
+          .text
+            border-none();
         .menu-name
           display: table-cell;
           font-size: 12px;
-          line-height: 14px;
           vertical-align: middle;
           .item-icon
             display: inline-block;
@@ -124,6 +190,7 @@
           padding-bottom: 18px;
           &:last-child
             border-none();
+            padding-bottom: 0
           .food-icon
             flex: 0 0 57px;
             height: 57px;
@@ -134,6 +201,7 @@
               margin: 2px 0 8px 0;
               line-height: 14px;
               font-size: 14px;
+              font-weight: 700
               color: rgb(7, 17, 27);
             .food-description, .extra
               line-height: 10px;
@@ -142,7 +210,7 @@
             .food-description
               margin-bottom: 8px;
             .extra
-              &.food-count
+              .food-count
                 margin-right: 12px;
             .price
               font-weight: 700;
