@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import star from "../star/star";
+import star from '../star/star';
 
 export default {
   props: {
@@ -94,7 +94,7 @@ export default {
     }
   },
   created() {
-    this.iconMaps = ["decrease", "discount", "special", "invoice", "guarantee"]; // 用于保存不同的 type 对应的类名
+    this.iconMaps = ['decrease', 'discount', 'special', 'invoice', 'guarantee']; // 用于保存不同的 type 对应的类名
   },
   components: {
     star
@@ -111,7 +111,7 @@ export default {
   background-color: rgba(7, 17, 27, 0.5);
   overflow: hidden;
   // background-color: #999
-  .content-wrapper 
+  .content-wrapper
     position: relative;
     padding: 24px 12px 18px 24px;
     font-size: 0; // 去除 inline-block 元素之间的空白间隙
@@ -137,7 +137,7 @@ export default {
           bg-image('brand');
           background-size: 30px 18px;
           background-repeat: no-repeat;
-        .seller-name 
+        .seller-name
           font-size: 16px;
           font-weight: bold;
           line-height: 18px;

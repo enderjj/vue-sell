@@ -6,9 +6,9 @@
 
 <script type="text/ecmascript6">
   const LENGTH = 5; // 星星的总个数
-  const STAR_ON = 'on',
-        STAR_HALF = 'half',
-        STAR_OFF = 'off';
+  const STAR_ON = 'on';
+  const STAR_HALF = 'half';
+  const STAR_OFF = 'off';
 
   export default {
     props: {
@@ -20,7 +20,7 @@
       }
     },
     computed: {
-      // 根据不同的 size 显示不同尺寸的星星 
+      // 根据不同的 size 显示不同尺寸的星星
       starType() {
         return 'star-' + this.size;
       },

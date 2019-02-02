@@ -9,6 +9,9 @@ border-1px($color)
     content: ' '
     width: 100%
     border-top: 1px solid $color
+
+before-border-1px($color)
+  position: relative
   &:before
     display: block
     position: absolute
@@ -17,6 +20,10 @@ border-1px($color)
     content: ' '
     width: 100%
     border-bottom: 1px solid $color
+
+border-none()
+  &::after
+    display: none
 
 // 定义背景图片的显示
 bg-image($url)
