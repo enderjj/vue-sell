@@ -33,11 +33,13 @@
         </li>
       </ul>
     </div>
+    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript6">
   import BScroll from 'better-scroll';
+  import shopcart from '../shopcart/shopcart';
 
   const ERR_OK = 0;
 
@@ -53,6 +55,9 @@
         listHeight: [], // 用于存放每类商品列表的初始高度
         scrollHeight: 0 // 初始滚动高度
       };
+    },
+    components: {
+      shopcart
     },
     computed: {
       // 当前应该显示的 menu 的索引值
