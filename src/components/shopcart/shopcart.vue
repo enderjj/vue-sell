@@ -21,7 +21,7 @@
 <script>
 export default {
   props: {
-    selectFoods: {
+    selectFoods: { // 用于接收选择的商品
       type: Array,
       default() {
         return [
@@ -32,16 +32,17 @@ export default {
         ];
       }
     },
-    deliveryPrice: {
+    deliveryPrice: { // 配送费
       type: Number,
       default: 0
     },
-    minPrice: {
+    minPrice: { // 最小起送费用
       type: Number,
       default: 0
     }
   },
   computed: {
+    // 选购的商品总价
     totalPrice() {
       let total = 0;
       this.selectFoods.forEach((food) => {
@@ -49,6 +50,8 @@ export default {
       });
       return total;
     },
+
+    // 选购的商品总数
     totalCount() {
       let count = 0;
       this.selectFoods.forEach((food) => {
@@ -56,6 +59,8 @@ export default {
       });
       return count;
     },
+
+    // 不同的结算信息展示
     payDesc() {
       if (this.totalPrice === 0) {
         return `￥${this.minPrice}元起送`;

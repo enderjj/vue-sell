@@ -27,19 +27,23 @@
                   <span class="now-price">￥{{food.price}}</span>
                   <span v-show="food.oldPrice" class="old-price">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-container">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript6">
   import BScroll from 'better-scroll';
   import shopcart from '../shopcart/shopcart';
+  import cartcontrol from '../cartcontrol/cartcontrol';
 
   const ERR_OK = 0;
 
@@ -49,6 +53,7 @@
         type: Object
       }
     },
+
     data() {
       return {
         goods: {}, // 用于存放商品信息
@@ -56,9 +61,12 @@
         scrollHeight: 0 // 初始滚动高度
       };
     },
+
     components: {
-      shopcart
+      shopcart,
+      cartcontrol
     },
+
     computed: {
       // 当前应该显示的 menu 的索引值
       currentIndex() {
@@ -73,8 +81,22 @@
         }
 
         return 0;
+      },
+
+      // 获取所有选购的商品，返回一个商品数组
+      selectFoods() {
+        let foods = []; // 保存选购的商品
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) { // 如果商品被选中就加入数组
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
+
     created() {
       this.$http.get('/api/goods').then(response => {
         response = response.body; // 将响应数据转换成 Object 对象
@@ -90,12 +112,14 @@
 
       this.iconMaps = ['decrease', 'discount', 'special', 'invoice', 'guarantee']; // 用于保存不同的 type 对应的类名
     },
+
     methods: {
       // 初始化滚动条
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuwrapper, {click: true});
         this.foodScroll = new BScroll(this.$refs.foodwrapper, {
-          probeType: 3 // 3 表示除了实时派发scroll事件，在 swipe 的情况下仍然能实时派发 scroll 事件
+          probeType: 3, // 3 表示除了实时派发scroll事件，在 swipe 的情况下仍然能实时派发 scroll 事件
+          click: true
         });
         this.foodScroll.on('scroll', (pos) => {
           this.scrollHeight = Math.abs(Math.round(pos.y)); // 求得当前的 y 轴位置
@@ -120,7 +144,6 @@
           height += foodList[i].clientHeight; // 下一个商品列表的高度是上一个列表的高度+上一个列表的 clientHeight
           this.listHeight.push(height);
         }
-        console.log(this.listHeight);
       }
     }
   };
@@ -228,5 +251,9 @@
                 font-size: 10px;
                 color: rgb(147, 153, 159);
                 text-decoration: line-through;
+            .cartcontrol-container
+              position: absolute;
+              right: 0
+              bottom: 12px;
 </style>
 
