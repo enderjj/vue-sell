@@ -15,10 +15,25 @@
         <div class="pay">{{payDesc}}</div>
       </div>
     </div>
+    <div class="ball-container">
+      <div v-for="(ball, index) in balls" :key="index">
+        <!-- 通过 JavaScript 钩子实现动画 -->
+        <transition name="ball-move"
+                    @before-enter="beforeEnter"
+                    @enter="enter"
+                    @after-enter="afterEnter">
+          <div v-show="ball.show" class="ball">
+            <div class="inner inner-hook"></div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+let index = 0;
+
 export default {
   props: {
     selectFoods: { // 用于接收选择的商品
@@ -40,6 +55,33 @@ export default {
       type: Number,
       default: 0
     }
+  },
+  data() {
+    return {
+      balls: [ // 保存所有小球
+        {
+          id: index++,
+          show: false
+        },
+        {
+          id: index++,
+          show: false
+        },
+        {
+          id: index++,
+          show: false
+        },
+        {
+          id: index++,
+          show: false
+        },
+        {
+          id: index++,
+          show: false
+        }
+      ],
+      dropBalls: [] // 保存所有要下落的小球
+    };
   },
   computed: {
     // 选购的商品总价
@@ -69,6 +111,69 @@ export default {
         return `还差￥${diffPrice}起送`;
       } else {
         return '去结算';
+      }
+    }
+  },
+  created() {
+    this.$root.eventHub.$on('cartadd', (target) => { // 监听事件 cartadd
+      this.drop(target);
+    });
+  },
+  methods: {
+    drop(target) {
+      for (let i = 0; i < this.balls.length; i++) {
+        let ball = this.balls[i];
+
+        if (!ball.show) { // 寻找第一个 show 为 false 的小球
+          ball.show = true;
+          ball.element = target; // 将事件的目标保存
+          this.dropBalls.push(ball);
+          return;
+        }
+      }
+    },
+
+    beforeEnter(el) {
+      let count = this.balls.length;
+
+      while (count--) {
+        let ball = this.balls[count];
+
+        if (ball.show) { // 寻找要做动画的小球
+          let rect = ball.element.getBoundingClientRect(); // 获取小球动画触发元素的位置
+          let x = rect.left - 32; // 小球运动起始位置和结束位置的水平距离
+          let y = -(window.innerHeight - rect.top - 22); // 小球运动起始位置和结束位置的垂直距离
+          // 在 target 元素上设置 y 轴上的运动
+          el.style.display = '';
+          el.style.webkitTransform = `translate3d(0, ${y}px, 0)`;
+          el.style.transform = `translate3d(0, ${y}px, 0)`;
+          // 在 inner 元素上设置 x 轴上的运动
+          let inner = el.getElementsByClassName('inner-hook')[0];
+          inner.style.webkitTransform = `translate3d(${x}px, 0, 0)`;
+          inner.style.transform = `translate3d(${x}px, 0, 0)`;
+        }
+      }
+    },
+
+    enter(el) {
+      /* eslint-disable no-unused-vars */
+      let rf = el.offsetHeight; // 手动重绘
+
+      this.$nextTick(() => {
+        el.style.webkitTransform = 'translate3d(0, 0, 0)';
+        el.style.transform = 'translate3d(0, 0, 0)';
+        let inner = el.getElementsByClassName('inner-hook')[0];
+        inner.style.webkitTransform = 'translate3d(0, 0, 0)';
+        inner.style.transform = 'translate3d(0, 0, 0)';
+      });
+    },
+
+    afterEnter(el) {
+      let ball = this.dropBalls.shift();
+
+      if (ball) {
+        ball.show = false; // 小球动画结束后重置小球的状态
+        el.style.display = 'none';
       }
     }
   }
@@ -163,5 +268,18 @@ export default {
           margin: 0 8px;
           font-size: 12px;
           font-weight: 700;
+    .ball-container
+      .ball
+        position: fixed;
+        left: 32px;
+        bottom: 22px;
+        z-index: 200;
+        transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
+        .inner
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgb(0, 160, 220);
+          transition: all 0.4s linear;
 </style>
 

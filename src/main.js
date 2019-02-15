@@ -15,5 +15,8 @@ new Vue({
   el: '#app',
   router,
   components: { App },
+  data: {
+    eventHub: new Vue() // 使用集中的事件处理器实现组件间的通信，通过一个空的 vue 实例实现事件处理器
+  },
   template: '<App/>'
 });

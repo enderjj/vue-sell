@@ -2,17 +2,17 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuwrapper">
       <ul>
-        <li class="menu-item border-1px" v-for="(item, index) in goods" :key="item" @click="clickScroll(index)" :class="{'current': currentIndex===index}">
+        <li class="menu-item border-1px" v-for="(item, index) in goods" :key="index" @click="clickScroll(index)" :class="{'current': currentIndex===index}">
           <span class="menu-name"><span class="item-icon" v-show="item.type>0" :class="iconMaps[item.type]"></span>{{item.name}}</span>
         </li>
       </ul>
     </div>
     <div class="foods-wrapper" ref="foodwrapper">
       <ul>
-        <li v-for="item in goods" :key="item" class="foodlist food-list-hook">
+        <li v-for="(item, index) in goods" :key="index" class="foodlist food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" :key="food" class="food-item">
+            <li v-for="(food, index) in item.foods" :key="index" class="food-item">
               <div class="food-icon">
                 <img width="57" height="57" :src="food.icon">
               </div>
@@ -56,7 +56,7 @@
 
     data() {
       return {
-        goods: {}, // 用于存放商品信息
+        goods: [], // 用于存放商品信息
         listHeight: [], // 用于存放每类商品列表的初始高度
         scrollHeight: 0 // 初始滚动高度
       };
@@ -65,6 +65,9 @@
     components: {
       shopcart,
       cartcontrol
+    },
+
+    event: {
     },
 
     computed: {
@@ -93,6 +96,7 @@
             }
           });
         });
+
         return foods;
       }
     },

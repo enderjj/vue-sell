@@ -47,7 +47,7 @@
               <div class="line"></div>
             </div>
             <ul class="all-supports" v-if="seller.supports">
-              <li class="support-item" v-for="support in seller.supports" :key="support">
+              <li class="support-item" v-for="(support, index) in seller.supports" :key="index">
                 <span class="support-icon" :class="iconMaps[support.type]"></span>
                 <span class="support-content">{{support.description}}</span>
               </li>
