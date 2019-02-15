@@ -32,8 +32,6 @@
 </template>
 
 <script>
-let index = 0;
-
 export default {
   props: {
     selectFoods: { // 用于接收选择的商品
@@ -60,27 +58,22 @@ export default {
     return {
       balls: [ // 保存所有小球
         {
-          id: index++,
           show: false
         },
         {
-          id: index++,
           show: false
         },
         {
-          id: index++,
           show: false
         },
         {
-          id: index++,
           show: false
         },
         {
-          id: index++,
           show: false
         }
       ],
-      dropBalls: [] // 保存所有要下落的小球
+      dropBalls: [] // 保存所有下落的小球
     };
   },
   computed: {
@@ -115,7 +108,8 @@ export default {
     }
   },
   created() {
-    this.$root.eventHub.$on('cartadd', (target) => { // 监听事件 cartadd
+    // 监听事件 cartadd
+    this.$root.eventHub.$on('cartadd', (target) => {
       this.drop(target);
     });
   },
@@ -126,7 +120,7 @@ export default {
 
         if (!ball.show) { // 寻找第一个 show 为 false 的小球
           ball.show = true;
-          ball.element = target; // 将事件的目标保存
+          ball.element = target; // 将点击事件的目标保存
           this.dropBalls.push(ball);
           return;
         }

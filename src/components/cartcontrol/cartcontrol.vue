@@ -22,17 +22,13 @@ export default {
   methods: {
     // 新增商品个数
     cartAdd(_event) {
-      // if (!event._constructed) {
-      //   return;
-      // }
-
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1); // 直接用 this.food.count = 1 不能被 dom 检测到，对于新增的对象属性，需要使用 Vue.set() 方法
       } else {
         this.food.count++;
       }
 
-      this.$root.eventHub.$emit('cartadd', _event.target); // 向父组件 goods 派发事件 cartadd
+      this.$root.eventHub.$emit('cartadd', _event.target); // 派发事件 cartadd，传入数据为事件目标
     },
 
     // 减少商品个数
@@ -49,7 +45,7 @@ export default {
   .cartcontrol
     font-size: 0;
     .decrease-show-enter-active, .decrease-show-leave-active
-      transition: all 0.4s;
+      transition: all 0.4s linear;
     .decrease-show-enter, .decrease-show-leave-to
       opacity: 0;
       transform: translate3d(24px, 0, 0);
